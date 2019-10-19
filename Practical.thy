@@ -52,9 +52,20 @@ lemma "(P\<or>R)\<longleftrightarrow>(\<not>(\<not>P\<and> \<not>R))"
     apply (erule notE)
     apply assumption
    apply (erule conjE)
-  (* apply (erule_tac X = "\<not>R" in notE)*)
-  oops
-
+   apply (erule_tac P = "R" in notE)
+   apply assumption
+  apply (rule ccontr)
+  apply (erule notE)
+  apply (rule conjI)
+   apply (rule notI)
+   apply (erule notE)
+   apply (rule disjI1)
+   apply assumption
+  apply (rule notI)
+  apply (erule notE)
+  apply (rule disjI2)
+  apply assumption
+  done
 
 (*1 mark*)
 lemma "(\<forall> x . F x \<longrightarrow> G x ) \<longrightarrow> \<not> (\<exists> x . F x \<and> \<not> G x )"

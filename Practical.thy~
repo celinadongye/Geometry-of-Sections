@@ -6,42 +6,82 @@ begin
 
 (*1 mark*)
 lemma "A\<or>A \<longrightarrow> A"
-  oops
+  apply (rule impI)
+  apply (erule disjE)
+   apply assumption+
+  done
 
 (*1 mark*)
 lemma "(P\<longrightarrow>R)\<longrightarrow>(\<not>P\<or>R)"
-  oops
+  apply (rule impI)
+  apply (rule ccontr)
+  apply (erule impE)
+   apply (rule ccontr)
+   apply (erule notE)
+   apply (rule disjI1)
+   apply assumption
+  apply (erule notE)
+  apply (rule disjI2)
+  apply assumption
+  done
 
 (*1 mark*)
 lemma "(P\<and>Q\<longrightarrow>R)\<longrightarrow>P\<longrightarrow>Q\<longrightarrow>R"
-  oops
+  apply (rule impI)+
+  apply (erule impE)
+   apply (rule conjI)
+    apply assumption+
+  done
 
 (*3 marks*)
 lemma "\<not>\<not>P \<or> \<not>P"
-  oops
+  apply (rule classical)
+  apply (rule disjI2)
+  apply (rule classical)
+  apply (erule notE)
+  apply (rule disjI1)
+  apply assumption
+  done
 
 (*4 marks*)
 lemma "(P\<or>R)\<longleftrightarrow>(\<not>(\<not>P\<and> \<not>R))"
+  apply (rule iffI)
+   apply (rule notI)
+   apply (erule disjE)
+    apply (erule conjE)
+    apply (erule notE)
+    apply assumption
+   apply (erule conjE)
+  (* apply (erule_tac X = "\<not>R" in notE)*)
   oops
+
 
 (*1 mark*)
 lemma "(\<forall> x . F x \<longrightarrow> G x ) \<longrightarrow> \<not> (\<exists> x . F x \<and> \<not> G x )"
+  apply (rule impI)
   oops
 
 (*1 mark*)
 lemma "(\<forall> x y. R x y) \<longrightarrow> (\<forall> x . R x x )"
+  apply (rule impI)
   oops
 
 (*3 marks*)
 lemma "(\<forall>x. P x)\<or>(\<exists>x.\<not>P x)"
+  apply (rule classical)
+  apply (rule disjI1)
   oops
 
 (*3 marks*)
 lemma "(\<forall>x. \<not> (P x \<longrightarrow> Q x)) \<longrightarrow> \<not>(\<exists>x. \<not>P x \<and> Q x)"
+  apply (rule impI)
   oops
 
 (*3 marks*)
 lemma "\<exists>Bob. (drunk Bob \<longrightarrow> (\<forall>y. drunk y))"
+  apply (rule exI)
+  apply (rule impI)
+  apply (rule allI)
   oops
 
 (*4 marks*)
