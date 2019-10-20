@@ -70,34 +70,103 @@ lemma "(P\<or>R)\<longleftrightarrow>(\<not>(\<not>P\<and> \<not>R))"
 (*1 mark*)
 lemma "(\<forall> x . F x \<longrightarrow> G x ) \<longrightarrow> \<not> (\<exists> x . F x \<and> \<not> G x )"
   apply (rule impI)
-  oops
+  apply (rule notI)
+  apply (erule exE)
+  apply (erule allE)
+  apply (erule impE)
+   apply (erule conjE)
+   apply assumption
+  apply (erule conjE)
+  apply (erule notE)
+  apply assumption
+  done
 
 (*1 mark*)
 lemma "(\<forall> x y. R x y) \<longrightarrow> (\<forall> x . R x x )"
   apply (rule impI)
-  oops
+  apply (rule allI)
+  apply (erule allE)+
+  apply assumption
+  done
 
 (*3 marks*)
 lemma "(\<forall>x. P x)\<or>(\<exists>x.\<not>P x)"
+(* TODO: find a more efficient proof..? *)
   apply (rule classical)
   apply (rule disjI1)
-  oops
+  apply (rule classical)
+  apply (rule allI)
+  apply (erule notE)
+  apply (rule disjI2)
+  apply (rule classical)
+  apply (rule exI)
+  apply (rule notI)
+  apply (erule notE)
+  apply (rule allI)
+  apply (rule classical)
+  apply (erule notE)
+  apply (rule exI)
+  apply (rule notI)
+  apply (erule notE)
+  apply assumption
+  done
 
 (*3 marks*)
 lemma "(\<forall>x. \<not> (P x \<longrightarrow> Q x)) \<longrightarrow> \<not>(\<exists>x. \<not>P x \<and> Q x)"
   apply (rule impI)
-  oops
+  apply (rule notI)
+  apply (erule exE)
+  apply (erule allE)
+  apply (erule notE)
+  apply (rule impI)
+  apply (erule conjE)
+  apply assumption
+  done
 
 (*3 marks*)
 lemma "\<exists>Bob. (drunk Bob \<longrightarrow> (\<forall>y. drunk y))"
+ apply (rule classical)
   apply (rule exI)
   apply (rule impI)
   apply (rule allI)
-  oops
+  apply (erule notE)
+  apply (rule classical)
+  apply (rule exI)
+  apply (rule impI)
+  apply (rule allI)
+  apply (rule classical)
+  apply (erule notE)
+  apply (rule exI)
+  apply (rule impI)
+  apply (rule allI)
+  apply (erule notE)
+  apply assumption
+  done
 
 (*4 marks*)
 lemma "\<not> (\<exists> barber . man barber \<and> (\<forall> x . man x \<and> \<not>shaves x x \<longleftrightarrow> shaves barber x ))"
-  oops
+  apply (rule notI)
+  apply (erule exE)
+  apply (erule conjE)
+  apply (erule allE)
+  apply (erule iffE)
+  apply (erule impE)
+   apply (rule conjI)
+    apply assumption
+   apply (rule notI)
+
+   apply (erule impE)
+    apply assumption
+   apply (erule conjE)
+   apply (erule notE)
+   apply assumption
+
+   apply (erule impE)
+    apply assumption
+   apply (erule conjE)
+   apply (erule notE)
+  apply assumption
+  done
 
 locale incidence =
   fixes incidence_points_on_sections :: "'point \<Rightarrow> 'section \<Rightarrow> bool" (infix " \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t " 80)
