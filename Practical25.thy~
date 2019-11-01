@@ -1,4 +1,4 @@
-theory Practical
+theory Practical25
 imports Main
 begin
 
@@ -6,216 +6,83 @@ begin
 
 (*1 mark*)
 lemma "A\<or>A \<longrightarrow> A"
-  apply (rule impI)
-  apply (erule disjE)
-   apply assumption+
-  done
+  oops
 
 (*1 mark*)
 lemma "(P\<longrightarrow>R)\<longrightarrow>(\<not>P\<or>R)"
-  apply (rule impI)
-  apply (rule ccontr)
-  apply (erule impE)
-   apply (rule ccontr)
-   apply (erule notE)
-   apply (rule disjI1)
-   apply assumption
-  apply (erule notE)
-  apply (rule disjI2)
-  apply assumption
-  done
+  oops
 
 (*1 mark*)
 lemma "(P\<and>Q\<longrightarrow>R)\<longrightarrow>P\<longrightarrow>Q\<longrightarrow>R"
-  apply (rule impI)+
-  apply (erule impE)
-   apply (rule conjI)
-    apply assumption+
-  done
+  oops
 
 (*3 marks*)
 lemma "\<not>\<not>P \<or> \<not>P"
-  apply (rule classical)
-  apply (rule disjI2)
-  apply (rule classical)
-  apply (erule notE)
-  apply (rule disjI1)
-  apply assumption
-  done
+  oops
 
 (*4 marks*)
 lemma "(P\<or>R)\<longleftrightarrow>(\<not>(\<not>P\<and> \<not>R))"
-  apply (rule iffI)
-   apply (rule notI)
-   apply (erule disjE)
-    apply (erule conjE)
-    apply (erule notE)
-    apply assumption
-   apply (erule conjE)
-   apply (erule_tac P = "R" in notE)
-   apply assumption
-  apply (rule ccontr)
-  apply (erule notE)
-  apply (rule conjI)
-   apply (rule notI)
-   apply (erule notE)
-   apply (rule disjI1)
-   apply assumption
-  apply (rule notI)
-  apply (erule notE)
-  apply (rule disjI2)
-  apply assumption
-  done
+  oops
 
 (*1 mark*)
-(* First version theory file lemma *)
-lemma "(\<forall> x . F x \<longrightarrow> G x ) \<longrightarrow> \<not> (\<exists> x . F x \<and> \<not> G x )"
-  apply (rule impI)
-  apply (rule notI)
-  apply (erule exE)
-  apply (erule allE)
-  apply (erule impE)
-   apply (erule conjE)
-   apply assumption
-  apply (erule conjE)
-  apply (erule notE)
-  apply assumption
-  done
-(* Lemma in handout *)
 lemma "(\<forall> x . F x) \<and> (\<forall> x . G x ) \<longrightarrow> (\<forall> x . F x \<and> G x )"
-  apply (rule impI)
-  apply (rule allI)
-  apply (erule conjE)
-  apply (rule conjI)
-   apply (erule allE, assumption)+
-  done
+  oops
 
 (*1 mark*)
 lemma "(\<forall> x y. R x y) \<longrightarrow> (\<forall> x . R x x )"
-  apply (rule impI)
-  apply (rule allI)
-  apply (erule allE)+
-  apply assumption
-  done
+  oops
 
 (*3 marks*)
 lemma "(\<forall>x. P x)\<or>(\<exists>x.\<not>P x)"
-(* avoid using classical *)
-  apply (rule classical)
-  apply (rule disjI1)
-  apply (rule classical)
-  apply (rule allI)
-  apply (erule notE)
-  apply (rule disjI2)
-  apply (rule classical)
-  apply (rule exI)
-  apply (rule notI)
-  apply (erule notE)
-  apply (rule allI)
-  apply (rule classical)
-  apply (erule notE)
-  apply (rule exI)
-  apply (rule notI)
-  apply (erule notE)
-  apply assumption
-  done
+  oops
 
 (*3 marks*)
 lemma "(\<forall>x. \<not> (P x \<longrightarrow> Q x)) \<longrightarrow> \<not>(\<exists>x. \<not>P x \<and> Q x)"
-  apply (rule impI)
-  apply (rule notI)
-  apply (erule exE)
-  apply (erule allE)
-  apply (erule notE)
-  apply (rule impI)
-  apply (erule conjE)
-  apply assumption
-  done
+  oops
 
 (*3 marks*)
 lemma "\<exists>Bob. (drunk Bob \<longrightarrow> (\<forall>y. drunk y))"
- apply (rule classical)
-  apply (rule exI)
-  apply (rule impI)
-  apply (rule allI)
-  apply (erule notE)
-  apply (rule classical)
-  apply (rule exI)
-  apply (rule impI)
-  apply (rule allI)
-  apply (rule classical)
-  apply (erule notE)
-  apply (rule exI)
-  apply (rule impI)
-  apply (rule allI)
-  apply (erule notE)
-  apply assumption
-  done
+  oops
 
 (*4 marks*)
 lemma "\<not> (\<exists> barber . man barber \<and> (\<forall> x . man x \<and> \<not>shaves x x \<longleftrightarrow> shaves barber x ))"
-  apply (rule notI)
-  apply (erule exE)
-  apply (erule conjE)
-  apply (erule allE)
-  apply (erule iffE)
-  apply (erule impE)
-   apply (rule conjI)
-    apply assumption
-   apply (rule notI)
-
-   apply (erule impE, assumption, erule conjE, erule notE, assumption)+
-  done
+  oops
 
 locale incidence =
   fixes incidence_points_on_sections :: "'point \<Rightarrow> 'section \<Rightarrow> bool" (infix " \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t " 80)
   fixes region_to_section :: "'region \<Rightarrow> 'section" 
-(*Write here your axiom stating that every section has a point incident to it*) (*2 marks*)
-  assumes section_nonempty: "\<forall>s. \<exists>P. P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s"
-(*Write here your axiom stating that two sections are the same
+  assumes section_nonempty: (*Write here your axiom stating that every section has 
+                                            a point incident to it*) (*2 marks*)
+  and section_uniqueness: (*Write here your axiom stating that two sections are the same
                                       if the same points are incident to each*) (*2 marks*)
-  and section_uniqueness: "\<forall>s1 s2. \<forall>P. P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s1 \<and> P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s2 \<longrightarrow> s1 = s2"
-
 begin
 
 definition isPartOf ::"'section \<Rightarrow> 'section \<Rightarrow> bool" (infix "isPartOf" 80) where 
 (*write your formalisation of definition D1 here*) (*1 mark*)
-"s1 isPartOf s2 \<equiv> \<forall>P. (P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s1 \<longrightarrow> P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s2)"
 
 definition inclusion ::"'region \<Rightarrow> 'section \<Rightarrow> bool"(infix "isIncludedIn" 80) where
 (*write your formalisation of definition D2 here*) (*1 mark*)
-"R isIncludedIn s \<equiv> (region_to_section R) isPartOf s"
 
 definition overlaps ::"'region \<Rightarrow> 'section \<Rightarrow> bool"(infix "overlaps" 80) where
 (*write your formalisation of definition D3 here*) (*1 mark*)
-" R overlaps s \<equiv> \<exists>P. P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t (region_to_section R) \<and> P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s"
 
 lemma region_overlaps_itself: "R overlaps (region_to_section R)"
 (*Write your structured proof here*) (*2 marks*)
-proof (unfold overlaps_def)
-  have incidence: "\<exists>P. P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t region_to_section R"
-    by (simp add: section_nonempty)
-  show "\<exists>P. P  \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t  region_to_section R \<and> P  \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t  region_to_section R" using incidence
-    by auto
-qed 
+  oops
 
 (*Formalise and prove that isPartOf is reflexive, transitive and antisymmetric*) (*3 marks*)
-lemma isPartOf_reflexive: "s isPartOf s"
+lemma isPartOf_reflexive: 
 (*Formalise and prove that isPartOf is reflexive here*)
-  by (simp add: isPartOf_def)
-(*
-proof (unfold isPartOf_def, (rule allI), (rule impI))
-  fix P
-  have incidence: "P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t region_to_section R"*)
+  oops
 
-
-lemma isPartOf_transitive: "(s1 isPartOf s2 \<and> s2 isPartOf s3) \<longrightarrow> s1 isPartOf s3"
+lemma isPartOf_transitive: 
 (*Formalise and prove that isPartOf is transitive here*)
-  by (simp add: isPartOf_def)
+  oops
 
-lemma isPartOf_antisymmetric: "(s1 isPartOf s2 \<and> s2 isPartOf s1) \<longrightarrow> s1 = s2"
+lemma isPartOf_antisymmetric: 
 (*Formalise and prove that isPartOf is antisymmetric here*)
-  using isPartOf_def section_nonempty section_uniqueness by blast
+  oops
+
  
 end
 
@@ -223,24 +90,20 @@ end
 locale section_bundles =  incidence incidence_points_on_sections region_to_section 
   for  incidence_points_on_sections :: "'point \<Rightarrow> 'section \<Rightarrow> bool" 
   and region_to_section :: "'region \<Rightarrow> 'section" +
-  fixes crossing :: "'region \<Rightarrow> 'section \<Rightarrow> bool" 
+  fixes crossing :: "'region \<Rightarrow> 'section \<Rightarrow> bool" (infix "crosses" 80)
   and incidence_sections_on_bundles :: "'section \<Rightarrow> 'bundle \<Rightarrow> bool" (infix "\<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n" 80) 
-(*Write your formalisation of Axiom SC1 here*) (*1 mark*)
-  assumes SC1: "\<forall>s R. (crossing R s) \<longrightarrow> (R overlaps s)"
-(*Write your formalisation of Axiom SI1 here*)     (*1 mark*)
- and SI1: "\<forall>s b1 b2. (s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b1 \<longleftrightarrow> s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b2) \<longrightarrow> (b1 = b2)"
-
+ assumes SC1: (*Write your formalisation of Axiom SC1 here*) (*1 mark*)
+ and SI1: (*Write your formalisation of Axiom SI1 here*)     (*1 mark*)
 begin
 
 definition atLeastAsRestrictiveAs :: "'section \<Rightarrow> 'bundle \<Rightarrow> 'section \<Rightarrow> bool" where 
 (*Write your formalisation of atLeastAsRestrictiveAs here*) (*1 mark*)
-"atLeastAsRestrictiveAs s1 b s2 \<equiv> (s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> s1 isPartOf s2)"
 
 notation 
   atLeastAsRestrictiveAs ("_ \<le>\<^sub>_ _" [80, 80, 80] 80)
 
 
-(*Formalise and prove that isPartOf is reflexive, transitive and antisymmetric*) (*2 marks*)
+(*Formalise and prove that atLeastAsRestrictiveAs is reflexive, transitive and antisymmetric*) (*2 marks*)
 
 (*Kulik and Eschenbach say 'The relation \<ge> is reflexive, transitive and antisymmetric for a given 
 sector bundle.' So, do they mean, given that the sections under consideration are in the bundle?
@@ -248,20 +111,17 @@ This is what we assume for reflexivity.*)
 lemma atLeastAsRestrictiveAs_reflexive: 
   assumes "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"  shows "s \<le>\<^sub>b s"
 (*Add your proof here*)
-  by (simp add: assms atLeastAsRestrictiveAs_def isPartOf_reflexive)
+  oops
 
 lemma atLeastAsRestrictiveAs_transitive: 
 (*Formalise and prove that atLeastAsRestrictiveAs is transitive*)
-  assumes "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" shows "(s1 \<le>\<^sub>b s2 \<and> s2 \<le>\<^sub>b s3) \<longrightarrow> (s1 \<le>\<^sub>b s2)"
-  by simp
+  oops
 
 lemma atLeastAsRestrictiveAs_antisymmetric: 
-(*Formalise and prove that atLeastAsRestrictiveAs is antisymmetric*)
-(*  assumes "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" shows "(s1 \<le>\<^sub>b s2 \<and> "s2 \<le>\<^sub>b s1) \<longrightarrow> (s1 = s2)" *)
+(*Formalise and prove that atLeastAsRestrictiveAs is antisymmetric*))
   oops
 
 end
-
 
 locale comparison = section_bundles incidence_points_on_sections region_to_section 
  crossing incidence_sections_on_bundles
@@ -269,24 +129,18 @@ locale comparison = section_bundles incidence_points_on_sections region_to_secti
   and region_to_section :: "'region \<Rightarrow> 'section" 
   and crossing :: "'region \<Rightarrow> 'section \<Rightarrow> bool" (infix "crosses" 80) 
   and incidence_sections_on_bundles :: "'section \<Rightarrow> 'bundle \<Rightarrow> bool" (infix "\<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n" 80)+
-(*Write your formalisation of Axiom SB2 here*) (*1 mark*)
-assumes SB2: "\<forall>s1 s2 b. (s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b) \<longrightarrow> (s1 \<le>\<^sub>b s2 \<or> s2 \<le>\<^sub>b s1)"
-
+assumes SB2:(*Write your formalisation of Axiom SB2 here*) (*1 mark*)
 begin
 
-(*Write your formalisation and proof of Theorem T1 here*) (*1 mark*)
-lemma T1: "\<forall>b s1 s2 R. (R overlaps s1) \<longrightarrow> ((s1 \<le>\<^sub>b s2) \<longrightarrow> (R overlaps s2))"
-  oops
-(*Write your formalisation and proof of Theorem T2 here*) (*1 mark*)
-lemma T2: "\<forall>b s1 s2 R. (R isIncludedIn s1) \<longrightarrow> ((s1 \<le>\<^sub>b s2) \<longrightarrow> (R isIncludedIn s2))"
-oops
+lemma T1:(*Write your formalisation and proof of Theorem T1 here*) (*1 mark*)
+
+lemma T2:(*Write your formalisation and proof of Theorem T2 here*) (*1 mark*)
 
 definition isCore (infix "isCoreOf" 80) where
 "s isCoreOf b = (s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> (\<forall>s'. s' \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> s \<le>\<^sub>b s'))"
 
-(*Write your definition of hull here*) (*1 mark*)
-definition isHull (infix "isHull" 80) where
-"s isHull b = (s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> (\<forall>s'. s' \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> s' \<le>\<^sub>b s))"
+definition (*Write your definition of hull here*) (*1 mark*)
+
 
 end
 
@@ -296,14 +150,13 @@ locale crossing_sector = comparison incidence_points_on_sections
 and region_to_section :: "'region \<Rightarrow> 'section" 
 and crossing :: "'region \<Rightarrow> 'section \<Rightarrow> bool" (infix "crosses" 80)  
 and incidence_sections_on_bundles :: "'section \<Rightarrow> 'bundle \<Rightarrow> bool" (infix "\<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n" 80) +
-(*Write your formalisation of Axiom SC2 here*) (*1 mark*)
-assumes SC2: "\<forall>b s1 s2 R. (R crosses s1) \<longrightarrow> ((s1 \<le>\<^sub>b s2) \<longrightarrow> (R crosses s2))"
+assumes SC2: (*Write your formalisation of Axiom SC2 here*) (*1 mark*)
 begin
 
-(*Write your formalisation and structured proof of the remark `If a region 
+
+lemma overlaps_core: (*Write your formalisation and structured proof of the remark `If a region 
 overlaps the core of a section bundle then it overlaps every section of the section bundle'*) 
 (*4 marks*)
-lemma overlaps_core: 
 
 lemma crosses_hull: (*Write your formalisation and structured proof of the remark `If a region 
 crosses the hull of a section bundle then it crosses every sector of the section bundle'*) 
@@ -361,7 +214,6 @@ lemma T4: (*Write your formalisation and proof of Theorem T4 here*) (*1 mark*)
 
 lemma T5: (*Write your formalisation and structured proof of Theorem T5 here. 
 You must show it follows from T4*) (*3 marks*)
-
 
 (********************Challenge problem****************************************)
 

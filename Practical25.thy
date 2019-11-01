@@ -48,6 +48,7 @@ lemma "\<exists>Bob. (drunk Bob \<longrightarrow> (\<forall>y. drunk y))"
 lemma "\<not> (\<exists> barber . man barber \<and> (\<forall> x . man x \<and> \<not>shaves x x \<longleftrightarrow> shaves barber x ))"
   oops
 
+
 locale incidence =
   fixes incidence_points_on_sections :: "'point \<Rightarrow> 'section \<Rightarrow> bool" (infix " \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t " 80)
   fixes region_to_section :: "'region \<Rightarrow> 'section" 
