@@ -68,6 +68,7 @@ lemma "(P\<or>R)\<longleftrightarrow>(\<not>(\<not>P\<and> \<not>R))"
   done
 
 (*1 mark*)
+(* First version theory file lemma *)
 lemma "(\<forall> x . F x \<longrightarrow> G x ) \<longrightarrow> \<not> (\<exists> x . F x \<and> \<not> G x )"
   apply (rule impI)
   apply (rule notI)
@@ -80,6 +81,14 @@ lemma "(\<forall> x . F x \<longrightarrow> G x ) \<longrightarrow> \<not> (\<ex
   apply (erule notE)
   apply assumption
   done
+(* Lemma in handout *)
+lemma "(\<forall> x . F x) \<and> (\<forall> x . G x ) \<longrightarrow> (\<forall> x . F x \<and> G x )"
+  apply (rule impI)
+  apply (rule allI)
+  apply (erule conjE)
+  apply (rule conjI)
+   apply (erule allE, assumption)+
+  done
 
 (*1 mark*)
 lemma "(\<forall> x y. R x y) \<longrightarrow> (\<forall> x . R x x )"
@@ -91,7 +100,7 @@ lemma "(\<forall> x y. R x y) \<longrightarrow> (\<forall> x . R x x )"
 
 (*3 marks*)
 lemma "(\<forall>x. P x)\<or>(\<exists>x.\<not>P x)"
-(* TODO: find a more efficient proof..? *)
+(* avoid using classical *)
   apply (rule classical)
   apply (rule disjI1)
   apply (rule classical)
@@ -155,39 +164,35 @@ lemma "\<not> (\<exists> barber . man barber \<and> (\<forall> x . man x \<and> 
     apply assumption
    apply (rule notI)
 
-   apply (erule impE)
-    apply assumption
-   apply (erule conjE)
-   apply (erule notE)
-   apply assumption
-
-   apply (erule impE)
-    apply assumption
-   apply (erule conjE)
-   apply (erule notE)
-  apply assumption
+   apply (erule impE, assumption, erule conjE, erule notE, assumption)+
   done
 
 locale incidence =
   fixes incidence_points_on_sections :: "'point \<Rightarrow> 'section \<Rightarrow> bool" (infix " \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t " 80)
   fixes region_to_section :: "'region \<Rightarrow> 'section" 
-  assumes section_nonempty: (*Write here your axiom stating that every section has 
+  assumes section_nonempty: "\<forall>s. \<exists>P. P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s"
+(*Write here your axiom stating that every section has 
                                             a point incident to it*) (*2 marks*)
-  and section_uniqueness: (*Write here your axiom stating that two sections are the same
+  and section_uniqueness: "\<forall>s1 s2. \<forall>P. P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s1 \<and> P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s2 \<longrightarrow> s1 = s2"
+(*Write here your axiom stating that two sections are the same
                                       if the same points are incident to each*) (*2 marks*)
 begin
 
 definition isPartOf ::"'section \<Rightarrow> 'section \<Rightarrow> bool" (infix "isPartOf" 80) where 
 (*write your formalisation of definition D1 here*) (*1 mark*)
+"s1 isPartOf s2 \<equiv> \<forall>s1 s2. \<forall>P1. (P1 \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s1 \<longrightarrow> P1 \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s2)"
 
 definition inclusion ::"'region \<Rightarrow> 'section \<Rightarrow> bool"(infix "isIncludedIn" 80) where
 (*write your formalisation of definition D2 here*) (*1 mark*)
+"R isIncludedIn s \<equiv> \<forall>R s. R isPartOf s"
 
 definition overlaps ::"'region \<Rightarrow> 'section \<Rightarrow> bool"(infix "overlaps" 80) where
 (*write your formalisation of definition D3 here*) (*1 mark*)
+" R overlaps s \<equiv> \<forall>R s. \<exists>P. P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t R \<and> P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s"
 
 lemma region_overlaps_itself: "R overlaps (region_to_section R)"
 (*Write your structured proof here*) (*2 marks*)
+proof
   oops
 
 (*Formalise and prove that isPartOf is reflexive, transitive and antisymmetric*) (*3 marks*)

@@ -180,34 +180,42 @@ begin
 
 definition isPartOf ::"'section \<Rightarrow> 'section \<Rightarrow> bool" (infix "isPartOf" 80) where 
 (*write your formalisation of definition D1 here*) (*1 mark*)
-"s1 isPartOf s2 \<equiv> \<forall>s1 s2. \<forall>P1. (P1 \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s1 \<longrightarrow> P1 \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s2)"
+"s1 isPartOf s2 \<equiv> \<forall>P. (P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s1 \<longrightarrow> P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s2)"
 
 definition inclusion ::"'region \<Rightarrow> 'section \<Rightarrow> bool"(infix "isIncludedIn" 80) where
 (*write your formalisation of definition D2 here*) (*1 mark*)
-"R isIncludedIn s \<equiv> \<forall>R s. R isPartOf s"
+"R isIncludedIn s \<equiv> (region_to_section R) isPartOf s"
 
 definition overlaps ::"'region \<Rightarrow> 'section \<Rightarrow> bool"(infix "overlaps" 80) where
 (*write your formalisation of definition D3 here*) (*1 mark*)
-" R overlaps s \<equiv> \<forall>R s. \<exists>P. P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t R \<and> P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s"
+" R overlaps s \<equiv> \<exists>P. P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t (region_to_section R) \<and> P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s"
 
 lemma region_overlaps_itself: "R overlaps (region_to_section R)"
 (*Write your structured proof here*) (*2 marks*)
-proof
-  oops
+proof (unfold overlaps_def)
+  have incidence: "\<exists>P. P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t region_to_section R"
+    by (simp add: section_nonempty)
+  show "\<exists>P. P  \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t  region_to_section R \<and> P  \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t  region_to_section R" using incidence
+    by auto
+qed 
 
 (*Formalise and prove that isPartOf is reflexive, transitive and antisymmetric*) (*3 marks*)
-lemma isPartOf_reflexive: 
+lemma isPartOf_reflexive: "s isPartOf s"
 (*Formalise and prove that isPartOf is reflexive here*)
-  oops
+  by (simp add: isPartOf_def)
+(*
+proof (unfold isPartOf_def, (rule allI), (rule impI))
+  fix P
+  have incidence: "P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t region_to_section R"*)
 
-lemma isPartOf_transitive: 
+
+lemma isPartOf_transitive: "(s1 isPartOf s2 \<and> s2 isPartOf s3) \<longrightarrow> s1 isPartOf s3"
 (*Formalise and prove that isPartOf is transitive here*)
-  oops
+  by (simp add: isPartOf_def)
 
-lemma isPartOf_antisymmetric: 
+lemma isPartOf_antisymmetric: "(s1 isPartOf s2 \<and> s2 isPartOf s1) \<longrightarrow> s1 = s2"
 (*Formalise and prove that isPartOf is antisymmetric here*)
-  oops
-
+  using isPartOf_def section_nonempty section_uniqueness by blast
  
 end
 
