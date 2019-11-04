@@ -174,7 +174,7 @@ locale incidence =
   assumes section_nonempty: "\<forall>s. \<exists>P. P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s"
 (*Write here your axiom stating that two sections are the same
                                       if the same points are incident to each*) (*2 marks*)
-  and section_uniqueness: "\<forall>s1 s2. \<forall>P. P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s1 \<and> P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s2 \<longrightarrow> s1 = s2"
+  and section_uniqueness: "\<forall>s1 s2. (\<forall>P. (P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s1 \<longleftrightarrow> P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s2)) \<longrightarrow> s1 = s2"
 
 begin
 
@@ -203,11 +203,6 @@ qed
 lemma isPartOf_reflexive: "s isPartOf s"
 (*Formalise and prove that isPartOf is reflexive here*)
   by (simp add: isPartOf_def)
-(*
-proof (unfold isPartOf_def, (rule allI), (rule impI))
-  fix P
-  have incidence: "P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t region_to_section R"*)
-
 
 lemma isPartOf_transitive: "(s1 isPartOf s2 \<and> s2 isPartOf s3) \<longrightarrow> s1 isPartOf s3"
 (*Formalise and prove that isPartOf is transitive here*)
@@ -215,8 +210,7 @@ lemma isPartOf_transitive: "(s1 isPartOf s2 \<and> s2 isPartOf s3) \<longrightar
 
 lemma isPartOf_antisymmetric: "(s1 isPartOf s2 \<and> s2 isPartOf s1) \<longrightarrow> s1 = s2"
 (*Formalise and prove that isPartOf is antisymmetric here*)
-  using isPartOf_def section_nonempty section_uniqueness by blast
- 
+  using isPartOf_def section_uniqueness by blast
 end
 
 
@@ -252,13 +246,13 @@ lemma atLeastAsRestrictiveAs_reflexive:
 
 lemma atLeastAsRestrictiveAs_transitive: 
 (*Formalise and prove that atLeastAsRestrictiveAs is transitive*)
-  assumes "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" shows "(s1 \<le>\<^sub>b s2 \<and> s2 \<le>\<^sub>b s3) \<longrightarrow> (s1 \<le>\<^sub>b s2)"
-  by simp
+  assumes "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" shows "(s1 \<le>\<^sub>b s2 \<and> s2 \<le>\<^sub>b s3) \<longrightarrow> (s1 \<le>\<^sub>b s3)"
+  using atLeastAsRestrictiveAs_def isPartOf_transitive by blast
 
 lemma atLeastAsRestrictiveAs_antisymmetric: 
 (*Formalise and prove that atLeastAsRestrictiveAs is antisymmetric*)
-(*  assumes "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" shows "(s1 \<le>\<^sub>b s2 \<and> "s2 \<le>\<^sub>b s1) \<longrightarrow> (s1 = s2)" *)
-  oops
+  assumes "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" shows "(s1 \<le>\<^sub>b s2 \<and> s2 \<le>\<^sub>b s1) \<longrightarrow> (s1 = s2)"
+  by (simp add: atLeastAsRestrictiveAs_def isPartOf_antisymmetric)
 
 end
 
