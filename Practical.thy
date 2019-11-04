@@ -264,16 +264,18 @@ locale comparison = section_bundles incidence_points_on_sections region_to_secti
   and crossing :: "'region \<Rightarrow> 'section \<Rightarrow> bool" (infix "crosses" 80) 
   and incidence_sections_on_bundles :: "'section \<Rightarrow> 'bundle \<Rightarrow> bool" (infix "\<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n" 80)+
 (*Write your formalisation of Axiom SB2 here*) (*1 mark*)
-assumes SB2: "\<forall>s1 s2 b. (s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b) \<longrightarrow> (s1 \<le>\<^sub>b s2 \<or> s2 \<le>\<^sub>b s1)"
+assumes SB2: "\<forall>b s1 s2. (s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b) \<longrightarrow> (s1 \<le>\<^sub>b s2 \<or> s2 \<le>\<^sub>b s1)"
 
 begin
 
 (*Write your formalisation and proof of Theorem T1 here*) (*1 mark*)
-lemma T1: "\<forall>b s1 s2 R. (R overlaps s1) \<longrightarrow> ((s1 \<le>\<^sub>b s2) \<longrightarrow> (R overlaps s2))"
-  oops
+lemma T1: "\<forall>b s1 R. (R overlaps s1) \<longrightarrow> (\<forall>s2. (s1 \<le>\<^sub>b s2) \<longrightarrow> (R overlaps s2))"
+  using atLeastAsRestrictiveAs_def isPartOf_def overlaps_def by auto
+
 (*Write your formalisation and proof of Theorem T2 here*) (*1 mark*)
-lemma T2: "\<forall>b s1 s2 R. (R isIncludedIn s1) \<longrightarrow> ((s1 \<le>\<^sub>b s2) \<longrightarrow> (R isIncludedIn s2))"
-oops
+lemma T2: "\<forall>b s1 R. (R isIncludedIn s1) \<longrightarrow> (\<forall>s2. (s1 \<le>\<^sub>b s2) \<longrightarrow> (R isIncludedIn s2))"
+  using atLeastAsRestrictiveAs_def inclusion_def isPartOf_transitive by blast
+
 
 definition isCore (infix "isCoreOf" 80) where
 "s isCoreOf b = (s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> (\<forall>s'. s' \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> s \<le>\<^sub>b s'))"
@@ -291,21 +293,26 @@ and region_to_section :: "'region \<Rightarrow> 'section"
 and crossing :: "'region \<Rightarrow> 'section \<Rightarrow> bool" (infix "crosses" 80)  
 and incidence_sections_on_bundles :: "'section \<Rightarrow> 'bundle \<Rightarrow> bool" (infix "\<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n" 80) +
 (*Write your formalisation of Axiom SC2 here*) (*1 mark*)
-assumes SC2: "\<forall>b s1 s2 R. (R crosses s1) \<longrightarrow> ((s1 \<le>\<^sub>b s2) \<longrightarrow> (R crosses s2))"
+assumes SC2: "\<forall>b s1 R. (R crosses s1) \<longrightarrow> (\<forall>s2. (s2 \<le>\<^sub>b s1) \<longrightarrow> (R crosses s2))"
 begin
 
 (*Write your formalisation and structured proof of the remark `If a region 
 overlaps the core of a section bundle then it overlaps every section of the section bundle'*) 
 (*4 marks*)
-lemma overlaps_core: 
+lemma overlaps_core: "\<exists>R b. (\<exists>s1. s1 isCoreOf b \<and> R overlaps s1) \<longrightarrow> (\<forall>s2. s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R overlaps s2)"
+proof 
+  oops
 
-lemma crosses_hull: (*Write your formalisation and structured proof of the remark `If a region 
+(*Write your formalisation and structured proof of the remark `If a region 
 crosses the hull of a section bundle then it crosses every sector of the section bundle'*) 
 (*4 marks*)
+lemma crosses_hull: 
+(*"\<exists>R b. (\<exists>s1. s1 isHullOf b \<and> R crosses s1) \<longrightarrow> (\<forall>s2. s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R crosses s2)"*)
 
-lemma not_overlap_hull:  (*Write your formalisation and structured proof of the remark `If a region 
+(*Write your formalisation and structured proof of the remark `If a region 
 does not overlap the hull of a section bundle, it does not overlap any of its sections'*) 
 (*4 marks*)
+lemma not_overlap_hull:  
 
 definition overlapsAsMuchAs :: "'region \<Rightarrow> 'bundle \<Rightarrow> 'region \<Rightarrow> bool"  where 
 "overlapsAsMuchAs R b R' == (\<forall>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> R' overlaps s \<longrightarrow> R overlaps s)"
@@ -335,14 +342,21 @@ where"less_overlapsAsMuchAs R b R' == more_overlapsAsMuchAs R' b R"
 
 (*Formalise and prove that overlapsAsMuchAs is reflexive and transitive*) (*2 marks*)
 
+
 lemma overlapsAsMuchAs_reflexive:
 (*Write your formalisation and proof that overlapsAsMuchAs is reflexive here*) 
+  assumes "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" shows "R1 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R1"
+  by (simp add: overlapsAsMuchAs_def)
 
 lemma overlapsAsMuchAs_transitive:
 (*Write your formalisation and proof that overlapsAsMuchAs is transitive here*)
+  assumes "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" shows "(R1 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2 \<and> R2 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R3) \<longrightarrow> (R1 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R3)"
+  by (simp add: overlapsAsMuchAs_def)
 
-lemma T3: (*Write your formalisation and structured proof of Theorem T3 here. You must attempt to 
+
+(*Write your formalisation and structured proof of Theorem T3 here. You must attempt to 
 formalise Kulik et al.'s reasoning*) (*11 marks*)
+lemma T3: "\<forall>b R1 R2. (R1 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2) \<longleftrightarrow> (\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s))"
 
 (*In under 200 words, compare and contrast the mechanical proof that you produced with the 
 pen-and-paper proof by Kulik et al.\. In particular, indicate any reasoning, proof parts, and/or 
@@ -351,10 +365,12 @@ useful lemmas that you had to make explicit during the mechanisation but may hav
 notation. Note any parts where you had to diverge from their reasoning, and why.
 Write your answer in a comment here.*) (*4 marks*)
 
-lemma T4: (*Write your formalisation and proof of Theorem T4 here*) (*1 mark*)
+(*Write your formalisation and proof of Theorem T4 here*) (*1 mark*)
+lemma T4: 
 
-lemma T5: (*Write your formalisation and structured proof of Theorem T5 here. 
+(*Write your formalisation and structured proof of Theorem T5 here. 
 You must show it follows from T4*) (*3 marks*)
+lemma T5: 
 
 
 (********************Challenge problem****************************************)
