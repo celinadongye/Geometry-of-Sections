@@ -298,18 +298,41 @@ assumes SC2: "\<forall>b s1 R. (R crosses s1) \<longrightarrow> (\<forall>s2. (s
 begin
 
 (****************************)
-(*Write your formalisation and structured proof of the remark `If a region 
+(*Write your formalisation and structured proof of the remark 'If a region 
 overlaps the core of a section bundle then it overlaps every section of the section bundle'*) 
 (*4 marks*)
 lemma overlaps_core: "(\<exists>s1. s1 isCoreOf b \<and> R overlaps s1) \<longrightarrow> (\<forall>s2. s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R overlaps s2)"
 proof (rule impI)
   assume "\<exists>s1. s1 isCoreOf b \<and> R overlaps s1"
-  then obtain s where "s isCoreOf b" using isCore_def
+  then obtain s where core_region: "s isCoreOf b \<and> R overlaps s"
+    by blast
+  have core_section: "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"  using isPartOf_def core_region isCore_def
+    by blast
 
 
-  obtain R b where "(\<exists>s1. s1 isCoreOf b \<and> R overlaps s1) \<longrightarrow> (\<forall>s2. s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R overlaps s2)"
-    using overlaps_def isCore_def
+proof
+  assume all_sections: "\<forall>s1. s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
+  have "s \<le>\<^sub>b s1"
+    using all_sections core_region isCore_def by blast
+qed
 
+  have all_sections: "\<forall>s1. s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" using isPartOf_def
+(*
+We have that section s is core of bundle b, and region R overlaps s.
+We showed that s is a section of b, by the definition of core (which says that this section contains
+all sections in the bundle.
+We need to show that for all sections of the bundle (part of the bundle), we have that R overlaps
+all these sections from the theorems we proved previously (core_region)
+ *)
+  obtain s1 where 0: "\<forall>s1. s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
+
+  have "\<forall>s1. s \<le>\<^sub>b s1" using isPartOf_def isCore_def core_section
+
+  have "\<exists>s1. s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" using core_section
+    
+  then have "\<forall>s1. s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
+
+  have "\<forall>s2. R overlaps s2" using T1
   oops
 
 (*Write your formalisation and structured proof of the remark `If a region 
