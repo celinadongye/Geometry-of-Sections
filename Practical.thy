@@ -301,23 +301,18 @@ begin
 (*Write your formalisation and structured proof of the remark 'If a region 
 overlaps the core of a section bundle then it overlaps every section of the section bundle'*) 
 (*4 marks*)
-lemma overlaps_core: "(\<exists>s1. s1 isCoreOf b \<and> R overlaps s1) \<longrightarrow> (\<forall>s2. s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R overlaps s2)"
-proof (rule impI)
-  assume "\<exists>s1. s1 isCoreOf b \<and> R overlaps s1"
-  then obtain s where core_region: "s isCoreOf b \<and> R overlaps s"
-    by blast
-  then have core_section: "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"  using isPartOf_def core_region isCore_def
-    by blast
-  then have all_sections: "\<forall>s1. s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" using isPartOf_def
-  then show "(\<forall>s2. s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R overlaps s2)"
-
-
-proof
-  assume all_sections: "\<forall>s1. s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
-  have "s \<le>\<^sub>b s1"
-    using all_sections core_region isCore_def by blast
+lemma overlaps_core:
+  assumes core: "s isCoreOf b" and overlap: "R overlaps s"
+  shows "\<forall>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> R overlaps s"
+proof (rule allI, rule impI)
+  fix s
+  assume "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
+  then have "\<exists>s1. s1 \<le>\<^sub>b s \<and> s1 isCoreOf b \<and> R overlaps s1"
+    using core isCore_def overlap by blast
+  then show "R overlaps s"
+    using T1 by blast
 qed
-  have all_sections: "\<forall>s1. s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" using isPartOf_def
+
 (*
 We have that section s is core of bundle b, and region R overlaps s.
 We showed that s is a section of b, by the definition of core (which says that this section contains
@@ -325,42 +320,39 @@ all sections in the bundle.
 We need to show that for all sections of the bundle (part of the bundle), we have that R overlaps
 all these sections from the theorems we proved previously (core_region)
  *)
-  obtain s1 where 0: "\<forall>s1. s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
 
-  have "\<forall>s1. s \<le>\<^sub>b s1" using isPartOf_def isCore_def core_section
-
-  have "\<exists>s1. s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" using core_section
-    
-  then have "\<forall>s1. s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
-
-  have "\<forall>s2. R overlaps s2" using T1
-  oops
 
 (*Write your formalisation and structured proof of the remark `If a region 
 crosses the hull of a section bundle then it crosses every sector of the section bundle'*) 
 (*4 marks*)
-lemma crosses_hull: assumes ex:"(\<exists>s1. s1 isHull b \<and> R crosses s1)" shows all:"(\<forall>s2. s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R crosses s2)"
-proof
-  fix s2
-  from ex obtain s1 where "s1 isHull b \<and> R crosses s1"
-    by blast
-  then have "s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" using isPartOf_def
-
-
-(*"(\<exists>s1. s1 isHull b \<and> R crosses s1) \<longrightarrow> (\<forall>s2. s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R crosses s2)"*)
-proof
-  assume (\<exists>s1. s1 isHull b \<and> R crosses s1)
-  oops
+lemma crosses_hull:
+  assumes hull: "s isHull b" and cross: "R crosses s"
+  shows "\<forall>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> R crosses s"
+proof (rule allI, rule impI)
+  fix s
+  assume "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
+  then have "\<exists>s1. s \<le>\<^sub>b s1 \<and> s1 isHull b \<and> R crosses s1"
+    using cross hull isHull_def by blast
+  then show "R crosses s"
+    using SC2 by blast
+qed
 
 
 (*Write your formalisation and structured proof of the remark `If a region 
 does not overlap the hull of a section bundle, it does not overlap any of its sections'*) 
 (*4 marks*)
-lemma not_overlap_hull: "(s1 isHull b \<and> \<not>(R overlaps s1)) \<longrightarrow> (\<forall>s2. s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> \<not>(R overlaps s2))"
-proof
-  have "s1 isHull b \<and> \<not>(R overlaps s1)"
-  oops
-(*********************************)
+lemma not_overlap_hull:
+  assumes hull: "s isHull b" and not_overlaps: "\<not>(R overlaps s)"
+  shows "(\<forall>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> \<not>(R overlaps s))"
+proof (rule allI, rule impI)
+  fix s
+  assume section_bundle: "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
+  then have "\<exists>s1. s1 \<le>\<^sub>b s"
+    using atLeastAsRestrictiveAs_reflexive by blast
+  then show "\<not>(R overlaps s)"
+    using T1 hull isHull_def not_overlaps section_bundle by blast
+qed
+
 
 definition overlapsAsMuchAs :: "'region \<Rightarrow> 'bundle \<Rightarrow> 'region \<Rightarrow> bool"  where 
 "overlapsAsMuchAs R b R' == (\<forall>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> R' overlaps s \<longrightarrow> R overlaps s)"
@@ -390,7 +382,6 @@ where"less_overlapsAsMuchAs R b R' == more_overlapsAsMuchAs R' b R"
 
 (*Formalise and prove that overlapsAsMuchAs is reflexive and transitive*) (*2 marks*)
 
-
 lemma overlapsAsMuchAs_reflexive:
 (*Write your formalisation and proof that overlapsAsMuchAs is reflexive here*) 
   assumes "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" shows "R1 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R1"
@@ -405,7 +396,8 @@ lemma overlapsAsMuchAs_transitive:
 (*Write your formalisation and structured proof of Theorem T3 here. You must attempt to 
 formalise Kulik et al.'s reasoning*) (*11 marks*)
 lemma T3: "\<forall>b R1 R2. (R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2) \<longleftrightarrow> (\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s))"
-proof
+proof -
+(*
   assume "\<forall>b R1 R2. (R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2)"
   fix b
 
@@ -414,8 +406,10 @@ proof
   next
     assume "(\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s))"
     ...
-  show "\<forall>b R1 R2. (R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2)"
-  oops
+  show "\<forall>b R1 R2. (R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2)"*)
+  show "\<forall>b R1 R2. (R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2) \<longleftrightarrow> (\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s))"
+    sorry
+qed
 
 (*In under 200 words, compare and contrast the mechanical proof that you produced with the 
 pen-and-paper proof by Kulik et al.\. In particular, indicate any reasoning, proof parts, and/or 
@@ -426,15 +420,20 @@ Write your answer in a comment here.*) (*4 marks*)
 
 (*Write your formalisation and proof of Theorem T4 here*) (*1 mark*)
 lemma T4: "\<forall>b R1 R2. (R1  >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2) \<or> (R1 \<cong>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2) \<or> (R1 <\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2)"
-  by (smt T1 comparison.SB2 comparison_axioms eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def overlapsAsMuchAs_def)
+proof -
+  show "\<forall>b R1 R2. (R1  >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2) \<or> (R1 \<cong>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2) \<or> (R1 <\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2)"
+    using T3 eq_overlapsAsMuchAs_def overlapsAsMuchAs_def by auto
+qed
 
 (*Write your formalisation and structured proof of Theorem T5 here. 
 You must show it follows from T4*) (*3 marks*)
 lemma T5: "\<forall>b R1 R2. (R1 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2) \<or> (R1 \<le>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2)"
 proof (rule allI)+
   fix b R1 R2
-
-  oops
+  show "R2 \<le>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R1 \<or> R1 \<le>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2"
+    using T4 eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def by blast
+(*(R1  >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2) \<or> (R1 \<cong>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2) \<or> (R1 <\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2)*)
+qed
 
 
 (********************Challenge problem****************************************)
