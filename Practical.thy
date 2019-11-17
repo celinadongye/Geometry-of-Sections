@@ -306,8 +306,10 @@ proof (rule impI)
   assume "\<exists>s1. s1 isCoreOf b \<and> R overlaps s1"
   then obtain s where core_region: "s isCoreOf b \<and> R overlaps s"
     by blast
-  have core_section: "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"  using isPartOf_def core_region isCore_def
+  then have core_section: "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"  using isPartOf_def core_region isCore_def
     by blast
+  then have all_sections: "\<forall>s1. s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" using isPartOf_def
+  then show "(\<forall>s2. s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R overlaps s2)"
 
 
 proof
@@ -315,7 +317,6 @@ proof
   have "s \<le>\<^sub>b s1"
     using all_sections core_region isCore_def by blast
 qed
-
   have all_sections: "\<forall>s1. s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" using isPartOf_def
 (*
 We have that section s is core of bundle b, and region R overlaps s.
@@ -338,8 +339,19 @@ all these sections from the theorems we proved previously (core_region)
 (*Write your formalisation and structured proof of the remark `If a region 
 crosses the hull of a section bundle then it crosses every sector of the section bundle'*) 
 (*4 marks*)
-lemma crosses_hull: "(\<exists>s1. s1 isHull b \<and> R crosses s1) \<longrightarrow> (\<forall>s2. s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R crosses s2)"
+lemma crosses_hull: assumes ex:"(\<exists>s1. s1 isHull b \<and> R crosses s1)" shows all:"(\<forall>s2. s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R crosses s2)"
+proof
+  fix s2
+  from ex obtain s1 where "s1 isHull b \<and> R crosses s1"
+    by blast
+  then have "s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" using isPartOf_def
+
+
+(*"(\<exists>s1. s1 isHull b \<and> R crosses s1) \<longrightarrow> (\<forall>s2. s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R crosses s2)"*)
+proof
+  assume (\<exists>s1. s1 isHull b \<and> R crosses s1)
   oops
+
 
 (*Write your formalisation and structured proof of the remark `If a region 
 does not overlap the hull of a section bundle, it does not overlap any of its sections'*) 
@@ -393,6 +405,16 @@ lemma overlapsAsMuchAs_transitive:
 (*Write your formalisation and structured proof of Theorem T3 here. You must attempt to 
 formalise Kulik et al.'s reasoning*) (*11 marks*)
 lemma T3: "\<forall>b R1 R2. (R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2) \<longleftrightarrow> (\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s))"
+proof
+  assume "\<forall>b R1 R2. (R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2)"
+  fix b
+
+  ...
+  show "(\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s))"
+  next
+    assume "(\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s))"
+    ...
+  show "\<forall>b R1 R2. (R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2)"
   oops
 
 (*In under 200 words, compare and contrast the mechanical proof that you produced with the 
@@ -409,8 +431,9 @@ lemma T4: "\<forall>b R1 R2. (R1  >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^su
 (*Write your formalisation and structured proof of Theorem T5 here. 
 You must show it follows from T4*) (*3 marks*)
 lemma T5: "\<forall>b R1 R2. (R1 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2) \<or> (R1 \<le>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2)"
-proof
-  fix R1 R2
+proof (rule allI)+
+  fix b R1 R2
+
   oops
 
 
@@ -418,28 +441,46 @@ proof
 
 (*Write your definition of the relation ci here. 
 Kulik et al. say `If a region crosses or is included in a section we write ci'.*) (*2 marks*)
-definition crosses_isIncludedIn :: 
+definition crosses_isIncludedIn :: "'region \<Rightarrow> 'section \<Rightarrow> bool"  where
+"crosses_isIncludedIn R s \<equiv> R crosses s \<or> R isIncludedIn s"
 
-definition crosses_isIncludedInAsMuchAs (*Write your definition of `crosses or is included in as much
-as' here*) (*2 marks*)
+notation 
+  crosses_isIncludedIn ("_ ci _" 80)
 
-definition belongsAsMuchAs (*Write your definition of `belongs as much as here: definition D8 in
-the paper.*) (*2 marks*)
+(*Write your definition of `crosses or is included in as much as' here*) (*2 marks*)
+definition crosses_isIncludedInAsMuchAs :: "'region \<Rightarrow> 'bundle \<Rightarrow> 'region \<Rightarrow> bool" where
+"crosses_isIncludedInAsMuchAs R b R' \<equiv> (\<forall>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> (R crosses s \<or> (R' isIncludedIn s \<longrightarrow> R isIncludedIn s)))" 
+
+notation 
+  crosses_isIncludedInAsMuchAs ("_ \<ge>\<^sub>c\<^sub>i \<^sub>_ _" [80, 80, 80] 80)
+
+(*Write your definition of `belongs as much as here: definition D8 in the paper.*) (*2 marks*)
+definition belongsAsMuchAs :: "'region \<Rightarrow> 'bundle \<Rightarrow> 'region \<Rightarrow> bool" where
+"belongsAsMuchAs R b R' \<equiv>  (R \<ge>\<^sub>c\<^sub>i \<^sub>b R') \<and> (R \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R')"
+
+notation 
+  belongsAsMuchAs ("_ \<ge> \<^sub>_ _" [80, 80, 80] 80)
 
 (*Formalise and write structured proofs of Theorems T6-T8 for both crossesIncludedInAsMuchAs and
 belongsAsMuchAs*) (*14 marks*)
 
-lemma T6_crosses_isIncludedInAsMuchAs: "\<forall>b R1. (\<exists>s. s isHullOf b \<and> \<not>(R1 overlaps s)) \<longrightarrow> (\<forall>R2. R2 \<le>\<^sub>b R1)"
+lemma T6_crosses_isIncludedInAsMuchAs: "\<forall>b R1. (\<exists>s. s isHull b \<and> \<not>(R1 overlaps s)) \<longrightarrow> (\<forall>R2. R2 \<ge>\<^sub>c\<^sub>i \<^sub>b R1)"
+  oops
 
-lemma T6_belongsAsMuchAs:
+lemma T6_belongsAsMuchAs: "\<forall>b R1. (\<exists>s. s isHull b \<and> \<not>(R1 overlaps s)) \<longrightarrow> (\<forall>R2. R2 \<ge> \<^sub>b R1)"
+  oops
 
-lemma T7_crosses_isIncludedInAsMuchAs:
+lemma T7_crosses_isIncludedInAsMuchAs: "\<forall>b R1. (\<exists>s. s isCoreOf b \<and> R1 isIncludedIn s) \<longrightarrow> (\<forall>R2. R1 \<ge>\<^sub>c\<^sub>i \<^sub>b R2)"
+  oops
 
-lemma T7_belongsAsMuchAs:
+lemma T7_belongsAsMuchAs: "\<forall>b R1. (\<exists>s. s isCoreOf b \<and> R1 isIncludedIn s) \<longrightarrow> (\<forall>R2. R1 \<ge> \<^sub>b R2)"
+  oops
 
-lemma T8_crosses_isIncludedInAsMuchAs:
+lemma T8_crosses_isIncludedInAsMuchAs: "\<forall>b R1. (\<exists>s. s isHull b \<and> (R1 crosses s)) \<longrightarrow> (\<forall>R2. R1 \<ge>\<^sub>c\<^sub>i \<^sub>b R2)"
+  oops
 
-lemma T8_belongsAsMuchAs:
+lemma T8_belongsAsMuchAs: "\<forall>b R1. (\<exists>s. s isHull b \<and> (R1 crosses s)) \<longrightarrow> (\<forall>R2. R1 \<ge> \<^sub>b R2)"
+  oops
 
 end
 
