@@ -302,15 +302,15 @@ begin
 overlaps the core of a section bundle then it overlaps every section of the section bundle'*) 
 (*4 marks*)
 lemma overlaps_core:
-  assumes core: "s isCoreOf b" and overlap: "R overlaps s"
+  assumes core: "s1 isCoreOf b" and overlap: "R overlaps s1"
   shows "\<forall>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> R overlaps s"
 proof (rule allI, rule impI)
   fix s
   assume "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
-  then have "\<exists>s1. s1 \<le>\<^sub>b s \<and> s1 isCoreOf b \<and> R overlaps s1"
-    using core isCore_def overlap by blast
+  then have "s1 \<le>\<^sub>b s"
+    using core isCore_def by blast
   then show "R overlaps s"
-    using T1 by blast
+    using overlap T1 by blast
 qed
 
 (*
@@ -326,15 +326,15 @@ all these sections from the theorems we proved previously (core_region)
 crosses the hull of a section bundle then it crosses every sector of the section bundle'*) 
 (*4 marks*)
 lemma crosses_hull:
-  assumes hull: "s isHull b" and cross: "R crosses s"
+  assumes hull: "s1 isHull b" and cross: "R crosses s1"
   shows "\<forall>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> R crosses s"
 proof (rule allI, rule impI)
   fix s
   assume "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
-  then have "\<exists>s1. s \<le>\<^sub>b s1 \<and> s1 isHull b \<and> R crosses s1"
-    using cross hull isHull_def by blast
+  then have "s \<le>\<^sub>b s1"
+    using hull isHull_def by blast
   then show "R crosses s"
-    using SC2 by blast
+    using cross SC2 by blast
 qed
 
 
@@ -342,15 +342,14 @@ qed
 does not overlap the hull of a section bundle, it does not overlap any of its sections'*) 
 (*4 marks*)
 lemma not_overlap_hull:
-  assumes hull: "s isHull b" and not_overlaps: "\<not>(R overlaps s)"
-  shows "(\<forall>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> \<not>(R overlaps s))"
-proof (rule allI, rule impI)
-  fix s
-  assume section_bundle: "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
-  then have "\<exists>s1. s1 \<le>\<^sub>b s"
-    using atLeastAsRestrictiveAs_reflexive by blast
-  then show "\<not>(R overlaps s)"
-    using T1 hull isHull_def not_overlaps section_bundle by blast
+  assumes hull: "s1 isHull b" and not_overlaps: "\<not>(R overlaps s1)" and section_bundle: "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
+  shows "(\<not>(R overlaps s))"
+proof (insert not_overlaps, rule contrapos_nn, assumption)
+  assume all_overlaps: "R overlaps s"
+  then have "s \<le>\<^sub>b s1"
+    using hull isHull_def section_bundle by blast
+  then show "R overlaps s1"
+    using not_overlaps all_overlaps T1 by blast
 qed
 
 
@@ -397,6 +396,8 @@ lemma overlapsAsMuchAs_transitive:
 formalise Kulik et al.'s reasoning*) (*11 marks*)
 lemma T3: "\<forall>b R1 R2. (R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2) \<longleftrightarrow> (\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s))"
 proof -
+  
+
 (*
   assume "\<forall>b R1 R2. (R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2)"
   fix b
