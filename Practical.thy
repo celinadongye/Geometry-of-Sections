@@ -392,6 +392,13 @@ lemma overlapsAsMuchAs_transitive:
   assumes "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" shows "(R1 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2 \<and> R2 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R3) \<longrightarrow> (R1 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R3)"
   by (simp add: overlapsAsMuchAs_def)
 
+lemma assumes ex: "\<exists>x. \<forall>y. P x y" shows "\<forall>y. \<exists>x. P x y"
+proof
+  fix y
+  obtain x where "\<forall>y. P x y" using ex by blast
+  then have "P x y" by blast
+  then show "\<exists>x. P x y" by blast
+qed
 
 (*Write your formalisation and structured proof of Theorem T3 here. You must attempt to 
 formalise Kulik et al.'s reasoning*) (*11 marks*)
@@ -399,26 +406,46 @@ lemma T3: "\<forall>b R1 R2. (R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub
 proof ((rule allI)+, rule iffI)
   fix b R1 R2
 (*Left-to-right \<Rightarrow>*)
-  assume overlaps: "R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2"
-  (*then obtain s where "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"*)
-  show "\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not> R2 overlaps s"
-    sorry
-
-
-
+  assume moreThan: "R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2"
+  then have asMuchAs: "R1 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2"
+    by (simp add: more_overlapsAsMuchAs_def)
+  then have not_asMuchAs: "\<not>(R2 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R1)"
+    using more_overlapsAsMuchAs_def moreThan by blast
+  obtain s where ov_def: "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> R2 overlaps s \<longrightarrow> R1 overlaps s"
+                and not_ov_def: "\<not>(s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> R1 overlaps s \<longrightarrow> R2 overlaps s)"
+    using not_asMuchAs overlapsAsMuchAs_def by blast
+(* Reasoning on how to get "R1 overlaps s"
+    assume section_bundle: "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" and "R2 overlaps s"
+    then have overlaps: "R1 overlaps s"
+      by (simp add: ov_def)
+*)
+  then have overlaps: "R1 overlaps s"
+    using ov_def by blast
+(* How to get "\<not>(R2 overlaps s)"
+  assume "\<not>(s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b) \<or> R1 overlaps s"
+  (* not_ov_def == (\<not>(s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b) \<or> R1 overlaps s) \<and> \<not>(R2 overlaps s) *)
+  then show not_overlaps: "\<not>(R2 overlaps s)"
+    using not_ov_def by blast
+*)
+  then have not_overlaps: "\<not>(R2 overlaps s)"
+    using not_ov_def by blast
+  then have "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s)"
+    using overlaps not_ov_def by blast
+  then show "\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s)"
+    by blast
 next
 (*Right-to-left \<Leftarrow>*)
   assume "(\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s))"
   then obtain s1 where section_bundle1: "s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" and overlaps1: "R1 overlaps s1"
                        and not_overlaps1: "\<not>(R2 overlaps s1)"
     by blast
-
   fix s2
   assume section_bundle2: "s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
   then have "(s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b) \<longrightarrow> (s1 \<le>\<^sub>b s2 \<or> s2 \<le>\<^sub>b s1)"
     using SB2 by blast
   then have restrictive: "s1 \<le>\<^sub>b s2 \<or> s2 \<le>\<^sub>b s1"
     using section_bundle1 section_bundle2 by blast
+
  (* then have part_of: "(s1 isPartOf s2) \<or> (s2 isPartOf s1)"
     using atLeastAsRestrictiveAs_def by blast*)
   (*Proof by cases*)
@@ -446,16 +473,15 @@ next
     using not_overlaps1 overlaps1 overlapsAsMuchAs_def section_bundle1 by blast
   then have concl: "R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2"
     by (simp add: asMuchAs more_overlapsAsMuchAs_def)
+  
   (*then show "\<exists>s. R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2"
     using not_overlaps2 asMuchAs not_asMuchAs more_overlapsAsMuchAs_def by blast *)
 
 (*have R1 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2 \<and> \<not>(R2 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R1),
 should be able to show "R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2" using more_overlapsAsMuchAs_def*)
 
-(*
-  show "\<forall>b R1 R2. (R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2) \<longleftrightarrow> (\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s))"
-    sorry *)
-  oops
+    sorry
+qed
 
 
 (*In under 200 words, compare and contrast the mechanical proof that you produced with the 
