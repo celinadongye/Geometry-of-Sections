@@ -435,7 +435,8 @@ proof ((rule allI)+, rule iffI)
     by blast
 next
 (*Right-to-left \<Leftarrow>*)
-  assume "(\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s))"
+  fix b R1 R2
+  assume a: "(\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s))"
   then obtain s1 where section_bundle1: "s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" and overlaps1: "R1 overlaps s1"
                        and not_overlaps1: "\<not>(R2 overlaps s1)"
     by blast
@@ -475,14 +476,8 @@ next
     by (simp add: not_overlaps1 overlaps1 section_bundle1)
   then have "R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2"
     by (simp add: asMuchAs more_overlapsAsMuchAs_def not_asMuchAs)
-  then show "\<exists>s. R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2"
-
-  then show "(\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s)) \<longrightarrow> (R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2)"
-
-(*have R1 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2 \<and> \<not>(R2 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R1),
-should be able to show "R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2" using more_overlapsAsMuchAs_def*)
-
-    sorry
+  then show "R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2"
+    by blast
 qed
 
 
