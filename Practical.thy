@@ -439,13 +439,12 @@ next
   then obtain s1 where section_bundle1: "s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" and overlaps1: "R1 overlaps s1"
                        and not_overlaps1: "\<not>(R2 overlaps s1)"
     by blast
-  fix s2
-  assume section_bundle2: "s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"
-  then have "(s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b) \<longrightarrow> (s1 \<le>\<^sub>b s2 \<or> s2 \<le>\<^sub>b s1)"
-    using SB2 by blast
+  then obtain s2 where section_bundle2: "s2 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b" 
+    by blast
+  then have "(s1 \<le>\<^sub>b s2 \<or> s2 \<le>\<^sub>b s1)"
+    using SB2 section_bundle1 by auto
   then have restrictive: "s1 \<le>\<^sub>b s2 \<or> s2 \<le>\<^sub>b s1"
     using section_bundle1 section_bundle2 by blast
-
  (* then have part_of: "(s1 isPartOf s2) \<or> (s2 isPartOf s1)"
     using atLeastAsRestrictiveAs_def by blast*)
   (*Proof by cases*)
@@ -471,11 +470,14 @@ next
 
   then have not_asMuchAs: "\<not>(R2 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R1)"
     using not_overlaps1 overlaps1 overlapsAsMuchAs_def section_bundle1 by blast
-  then have concl: "R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2"
-    by (simp add: asMuchAs more_overlapsAsMuchAs_def)
-  
-  (*then show "\<exists>s. R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2"
-    using not_overlaps2 asMuchAs not_asMuchAs more_overlapsAsMuchAs_def by blast *)
+  (*assumptions based on s1*)
+  then have "s1 \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s1 \<and> \<not>(R2 overlaps s1)"
+    by (simp add: not_overlaps1 overlaps1 section_bundle1)
+  then have "R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2"
+    by (simp add: asMuchAs more_overlapsAsMuchAs_def not_asMuchAs)
+  then show "\<exists>s. R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2"
+
+  then show "(\<exists>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> R1 overlaps s \<and> \<not>(R2 overlaps s)) \<longrightarrow> (R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2)"
 
 (*have R1 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2 \<and> \<not>(R2 \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R1),
 should be able to show "R1 >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R2" using more_overlapsAsMuchAs_def*)
