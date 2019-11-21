@@ -81,7 +81,8 @@ lemma "(\<forall> x . F x \<longrightarrow> G x ) \<longrightarrow> \<not> (\<ex
   apply (erule notE)
   apply assumption
   done
-(* Lemma in handout *)
+
+(* Updated lemma in handout *)
 lemma "(\<forall> x . F x) \<and> (\<forall> x . G x ) \<longrightarrow> (\<forall> x . F x \<and> G x )"
   apply (rule impI)
   apply (rule allI)
@@ -100,23 +101,13 @@ lemma "(\<forall> x y. R x y) \<longrightarrow> (\<forall> x . R x x )"
 
 (*3 marks*)
 lemma "(\<forall>x. P x)\<or>(\<exists>x.\<not>P x)"
-(* avoid using classical *)
   apply (rule classical)
   apply (rule disjI1)
-  apply (rule classical)
   apply (rule allI)
+  apply (rule classical)
   apply (erule notE)
   apply (rule disjI2)
-  apply (rule classical)
   apply (rule exI)
-  apply (rule notI)
-  apply (erule notE)
-  apply (rule allI)
-  apply (rule classical)
-  apply (erule notE)
-  apply (rule exI)
-  apply (rule notI)
-  apply (erule notE)
   apply assumption
   done
 
@@ -163,7 +154,6 @@ lemma "\<not> (\<exists> barber . man barber \<and> (\<forall> x . man x \<and> 
    apply (rule conjI)
     apply assumption
    apply (rule notI)
-
    apply (erule impE, assumption, erule conjE, erule notE, assumption)+
   done
 
@@ -172,8 +162,8 @@ locale incidence =
   fixes region_to_section :: "'region \<Rightarrow> 'section" 
 (*Write here your axiom stating that every section has a point incident to it*) (*2 marks*)
   assumes section_nonempty: "\<forall>s. \<exists>P. P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s"
-(*Write here your axiom stating that two sections are the same
-                                      if the same points are incident to each*) (*2 marks*)
+(*Write here your axiom stating that two sections are the same if the same points are
+incident to each*) (*2 marks*)
   and section_uniqueness: "\<forall>s1 s2. (\<forall>P. (P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s1 \<longleftrightarrow> P \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t s2)) \<longrightarrow> s1 = s2"
 
 begin
@@ -275,8 +265,6 @@ lemma T1: "\<forall>b s1 R. (R overlaps s1) \<longrightarrow> (\<forall>s2. (s1 
 (*Write your formalisation and proof of Theorem T2 here*) (*1 mark*)
 lemma T2: "\<forall>b s1 R. (R isIncludedIn s1) \<longrightarrow> (\<forall>s2. (s1 \<le>\<^sub>b s2) \<longrightarrow> (R isIncludedIn s2))"
   using atLeastAsRestrictiveAs_def inclusion_def isPartOf_transitive by blast
-
-thm inclusion_def
 
 definition isCore (infix "isCoreOf" 80) where
 "s isCoreOf b = (s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> (\<forall>s'. s' \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> s \<le>\<^sub>b s'))"
