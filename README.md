@@ -1,4 +1,4 @@
-# Automated Reasoning (INFR09042) Coursework
+# Automated Reasoning (INFR09042)
 
 Theorem proving in Isabelle, a generic interpretative theorem prover
 
